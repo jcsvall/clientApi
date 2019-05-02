@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 public class UserDto {
 	private String user;
+	private String password;
 	private String token;
 	public UserDto() {		
 	}

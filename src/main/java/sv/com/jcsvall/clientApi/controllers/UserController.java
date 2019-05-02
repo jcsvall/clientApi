@@ -6,6 +6,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties.Jwt;
@@ -33,6 +35,9 @@ public class UserController {
 	@Qualifier("usuarioService")
 	UsuarioService usuarioService;
 	
+	@Autowired 
+	HttpSession session;
+	
 	@PostMapping("user")
 	public UserDto login(@RequestParam("user") String username, @RequestParam("password") String pwd) {
 		String roles="ROLE_USER,ROLE_ADMIN";
@@ -44,13 +49,21 @@ public class UserController {
 	}
 
 	@PostMapping("user2")
-	public UserDto login2(@RequestBody UserDto userDto) {
+	public ResponseEntity<UserDto> login2(@RequestBody UserDto userDto) {
 		String roles="ROLE_ADMIN1";
 		String token = getJWToken(userDto.getUser(),roles);
 		UserDto us = new UserDto();
 		us.setUser(userDto.getUser());
 		us.setToken(token);
-		return us;
+		
+		Usuario usSession=usuarioService.findByUsuarioAndPassword(userDto.getUser(), userDto.getPassword());
+		
+		if(usSession==null) {
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		}
+		
+		session.setAttribute("usuario",usSession);
+		return  new ResponseEntity<UserDto>(us,HttpStatus.OK);
 	}
 
 	private String getJWToken(String username,String roles) {

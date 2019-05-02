@@ -11,5 +11,7 @@ public interface UsuarioService {
 
 	public abstract Usuario editarUsuario(Usuario usuario);
 	
+	public abstract Usuario findById(Long id);
 	
+	public abstract Usuario findByUsuarioAndPassword(String usuario, String password);
 }

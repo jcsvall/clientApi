@@ -3,6 +3,8 @@ package sv.com.jcsvall.clientApi.controllers;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import sv.com.jcsvall.clientApi.entities.Cliente;
 import sv.com.jcsvall.clientApi.entities.Usuario;
 import sv.com.jcsvall.clientApi.models.ClienteDto;
+import sv.com.jcsvall.clientApi.models.UserDto;
 import sv.com.jcsvall.clientApi.services.ClienteService;
 import sv.com.jcsvall.clientApi.services.UsuarioService;
 
@@ -30,6 +33,9 @@ public class ClienteController {
 	@Autowired
 	@Qualifier("usuarioService")
 	UsuarioService usuarioService;
+	
+	@Autowired 
+	HttpSession session;
 
 	@GetMapping("/clientesList")
 	public ResponseEntity<List<Cliente>> getAllClientes() {
@@ -45,9 +51,11 @@ public class ClienteController {
 		cli.setFechaInicio(new Date());
 		cli.setFechaFin(new Date());
 		
-		List<Usuario> us = usuarioService.getAllUser();
+		//List<Usuario> us = usuarioService.getAllUser();
+		Usuario usuarioD=(Usuario) session.getAttribute("usuario");
 		
-		cli.setUsuario(us.get(0));
+		cli.setUsuario(usuarioD);
+		
 		
 		clienteService.addCliente(cli);
 		return new ResponseEntity<ClienteDto>(clienteDto, HttpStatus.CREATED);
