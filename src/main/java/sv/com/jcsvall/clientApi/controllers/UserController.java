@@ -50,11 +50,10 @@ public class UserController {
 
 	@PostMapping("user2")
 	public ResponseEntity<UserDto> login2(@RequestBody UserDto userDto) {
-		String roles="ROLE_ADMIN1";
-		String token = getJWToken(userDto.getUser(),roles);
+		String roles="ROLE_ADMIN1";		
 		UserDto us = new UserDto();
 		us.setUser(userDto.getUser());
-		us.setToken(token);
+		
 		
 		Usuario usSession=usuarioService.findByUsuarioAndPassword(userDto.getUser(), userDto.getPassword());
 		
@@ -62,7 +61,10 @@ public class UserController {
 			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}
 		
-		session.setAttribute("usuario",usSession);
+		String token = getJWToken(usSession.getUsuario(),roles);
+		us.setToken(token);	
+		
+		//session.setAttribute("usuario",usSession);
 		return  new ResponseEntity<UserDto>(us,HttpStatus.OK);
 	}
 

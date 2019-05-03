@@ -14,4 +14,6 @@ public interface UsuarioService {
 	public abstract Usuario findById(Long id);
 	
 	public abstract Usuario findByUsuarioAndPassword(String usuario, String password);
+	
+	public abstract Usuario findByUsuario(String usuario);
 }

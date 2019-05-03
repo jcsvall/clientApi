@@ -8,7 +8,9 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -21,6 +23,9 @@ import io.jsonwebtoken.Jwts;
 
 public class JWTAuthorizationFilter extends OncePerRequestFilter{
 	
+	@Autowired 
+	HttpSession session;
+	
 	private final String HEADER = "Authorization";
 	private final String PREFIX = "Bearer ";
 	private final String SECRET = "secrectKey";
@@ -32,6 +37,8 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter{
 			if (existeJWTToken(request, response)) {
 				
 				Claims claims = validateToken(request);
+				partOfToken(claims);
+				createUserNameSession(request,claims);
 				if (claims.get("authorities") != null) {
 					setUpSpringAuthentication(claims);
 				} else {
@@ -66,6 +73,22 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter{
 	private Claims validateToken(HttpServletRequest request) {
 		String jwtToken = request.getHeader(HEADER).replace(PREFIX, "");		
 		return Jwts.parser().setSigningKey(SECRET.getBytes()).parseClaimsJws(jwtToken).getBody();
+	}	
+	
+	public void partOfToken(Claims claims) {
+		System.out.println("ID: " + claims.getId());
+		System.out.println("Subject: " + claims.getSubject());
+		System.out.println("Issuer: " + claims.getIssuer());
+		System.out.println("actual time: " + claims.getIssuedAt());
+		System.out.println("Expiration: " + claims.getExpiration());
+		
 	}
-
+	
+	private void createUserNameSession(HttpServletRequest request, Claims claims) {
+		HttpSession session = request.getSession();
+		if (session.getAttribute("usuario") == null) {
+			session.setAttribute("usuario", claims.getSubject());
+		}
+	}
+	
 }

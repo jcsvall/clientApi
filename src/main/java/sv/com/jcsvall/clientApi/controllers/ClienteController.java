@@ -52,7 +52,10 @@ public class ClienteController {
 		cli.setFechaFin(new Date());
 		
 		//List<Usuario> us = usuarioService.getAllUser();
-		Usuario usuarioD=(Usuario) session.getAttribute("usuario");
+		//Usuario usuarioD=(Usuario) session.getAttribute("usuario");
+		
+		String userName=(String) session.getAttribute("usuario");
+		Usuario usuarioD=usuarioService.findByUsuario(userName);
 		
 		cli.setUsuario(usuarioD);
 		
