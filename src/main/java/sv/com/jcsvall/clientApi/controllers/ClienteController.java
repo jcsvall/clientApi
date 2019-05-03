@@ -1,5 +1,6 @@
 package sv.com.jcsvall.clientApi.controllers;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import sv.com.jcsvall.clientApi.entities.Cliente;
 import sv.com.jcsvall.clientApi.entities.Usuario;
 import sv.com.jcsvall.clientApi.models.ClienteDto;
+import sv.com.jcsvall.clientApi.models.ClienteResponseDto;
 import sv.com.jcsvall.clientApi.models.UserDto;
 import sv.com.jcsvall.clientApi.services.ClienteService;
 import sv.com.jcsvall.clientApi.services.UsuarioService;
@@ -38,8 +40,8 @@ public class ClienteController {
 	HttpSession session;
 
 	@GetMapping("/clientesList")
-	public ResponseEntity<List<Cliente>> getAllClientes() {
-		return new ResponseEntity<List<Cliente>>(clienteService.getAllClientes(), HttpStatus.OK);
+	public ResponseEntity<List<ClienteResponseDto>> getAllClientes() {
+		return new ResponseEntity<List<ClienteResponseDto>>(clienteService.getAllClientesDto(), HttpStatus.OK);
 	}
 
 	@PostMapping("/create")

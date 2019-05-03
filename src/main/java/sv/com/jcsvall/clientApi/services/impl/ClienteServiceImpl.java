@@ -1,5 +1,6 @@
 package sv.com.jcsvall.clientApi.services.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import sv.com.jcsvall.clientApi.entities.Cliente;
+import sv.com.jcsvall.clientApi.entities.Usuario;
+import sv.com.jcsvall.clientApi.models.ClienteResponseDto;
 import sv.com.jcsvall.clientApi.repositories.ClienteRepository;
 import sv.com.jcsvall.clientApi.services.ClienteService;
 
@@ -20,6 +23,17 @@ public class ClienteServiceImpl implements ClienteService {
 	@Override
 	public List<Cliente> getAllClientes() {
 		return clienteRepository.findAll();
+	}
+	
+	@Override
+	public List<ClienteResponseDto> getAllClientesDto() {
+		List<ClienteResponseDto> clienteResponseDtoList = new ArrayList<>();
+		List<Cliente> clientes=getAllClientes();
+		for(Cliente cli:clientes) {
+			ClienteResponseDto cliente = new ClienteResponseDto(cli);
+			clienteResponseDtoList.add(cliente);
+		}
+		return clienteResponseDtoList;
 	}
 
 	@Override
@@ -39,5 +53,21 @@ public class ClienteServiceImpl implements ClienteService {
 		deleted = 1;
 		return deleted;
 	}
+
+	@Override
+	public List<Cliente> getAllClientesByUsuario(Usuario usuario) {		
+		return clienteRepository.findByUsuario(usuario);
+	}
+
+	@Override
+	public List<ClienteResponseDto> getAllClientesByUsuarioDto(Usuario usuario) {
+		List<ClienteResponseDto> clienteResponseDtoList = new ArrayList<>();
+		List<Cliente> clientes=getAllClientesByUsuario(usuario);
+		for(Cliente cli:clientes) {
+			ClienteResponseDto cliente = new ClienteResponseDto(cli);
+			clienteResponseDtoList.add(cliente);
+		}
+		return clienteResponseDtoList;
+	}	
 
 }
