@@ -1,8 +1,10 @@
 package sv.com.jcsvall.clientApi.controllers;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpSession;
 
@@ -72,5 +74,21 @@ public class ClienteController {
 
 		clienteService.addCliente(cli);
 		return new ResponseEntity<ClienteDto>(clienteDto, HttpStatus.CREATED);
+	}
+
+	@GetMapping("/clientesVencidos")
+	public ResponseEntity<List<ClienteResponseDto>> getClientesVencidos() {
+		String userName = (String) session.getAttribute(Constantes.USUARIO);
+		Usuario usuarioD = usuarioService.findByUsuario(userName);
+		Date now = new Date();
+		
+		List<ClienteResponseDto> clientesVencidos = new ArrayList<>();
+		for(Cliente clien:usuarioD.getClientes()) {
+			if(clien.getFechaFin().before(now)) {
+				clientesVencidos.add(new ClienteResponseDto(clien));
+			}
+		}
+
+		return new ResponseEntity<List<ClienteResponseDto>>(clientesVencidos, HttpStatus.OK);
 	}
 }
