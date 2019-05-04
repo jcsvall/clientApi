@@ -22,6 +22,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
+import sv.com.jcsvall.clientApi.configurations.Constantes;
 import sv.com.jcsvall.clientApi.configurations.HandleMyExeptionMessage;
 
 public class JWTAuthorizationFilter extends OncePerRequestFilter{
@@ -105,8 +106,8 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter{
 	
 	private void createUserNameSession(HttpServletRequest request, Claims claims) {
 		HttpSession session = request.getSession();
-		if (session.getAttribute("usuario") == null) {
-			session.setAttribute("usuario", claims.getSubject());
+		if (session.getAttribute(Constantes.USUARIO) == null) {
+			session.setAttribute(Constantes.USUARIO, claims.getSubject());
 		}
 	}
 	

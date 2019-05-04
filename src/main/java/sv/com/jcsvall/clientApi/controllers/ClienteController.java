@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import sv.com.jcsvall.clientApi.configurations.Constantes;
 import sv.com.jcsvall.clientApi.entities.Cliente;
 import sv.com.jcsvall.clientApi.entities.Usuario;
 import sv.com.jcsvall.clientApi.models.ClienteDto;
@@ -41,7 +42,7 @@ public class ClienteController {
 	
 	@GetMapping("/clientesList")
 	public ResponseEntity<List<ClienteResponseDto>> getAllClientes() {
-		String userName=(String) session.getAttribute("usuario");
+		String userName=(String) session.getAttribute(Constantes.USUARIO);
 		Usuario usuarioD=usuarioService.findByUsuario(userName);		
 		return new ResponseEntity<List<ClienteResponseDto>>(clienteService.getAllClientesByUsuarioDto(usuarioD), HttpStatus.OK);
 	}

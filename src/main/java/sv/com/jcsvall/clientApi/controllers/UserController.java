@@ -35,8 +35,8 @@ public class UserController {
 	@Qualifier("usuarioService")
 	UsuarioService usuarioService;
 	
-	@Autowired 
-	HttpSession session;
+	//@Autowired 
+	//HttpSession session;
 	
 	@PostMapping("user")
 	public UserDto login(@RequestParam("user") String username, @RequestParam("password") String pwd) {
