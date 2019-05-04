@@ -37,11 +37,13 @@ public class ClienteController {
 	UsuarioService usuarioService;
 	
 	@Autowired 
-	HttpSession session;
-
+	HttpSession session;	
+	
 	@GetMapping("/clientesList")
 	public ResponseEntity<List<ClienteResponseDto>> getAllClientes() {
-		return new ResponseEntity<List<ClienteResponseDto>>(clienteService.getAllClientesDto(), HttpStatus.OK);
+		String userName=(String) session.getAttribute("usuario");
+		Usuario usuarioD=usuarioService.findByUsuario(userName);		
+		return new ResponseEntity<List<ClienteResponseDto>>(clienteService.getAllClientesByUsuarioDto(usuarioD), HttpStatus.OK);
 	}
 
 	@PostMapping("/create")

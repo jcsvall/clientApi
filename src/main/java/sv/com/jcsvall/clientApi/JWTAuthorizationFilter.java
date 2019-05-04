@@ -12,14 +12,17 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
+import sv.com.jcsvall.clientApi.configurations.HandleMyExeptionMessage;
 
 public class JWTAuthorizationFilter extends OncePerRequestFilter{
 	
@@ -70,10 +73,26 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter{
 
 	}
 	
-	private Claims validateToken(HttpServletRequest request) {
-		String jwtToken = request.getHeader(HEADER).replace(PREFIX, "");		
-		return Jwts.parser().setSigningKey(SECRET.getBytes()).parseClaimsJws(jwtToken).getBody();
-	}	
+	private Claims validateToken(HttpServletRequest request) throws IOException {
+		Claims claims = null;
+		try {
+			String jwtToken = request.getHeader(HEADER).replace(PREFIX, "");
+			claims = Jwts.parser().setSigningKey(SECRET.getBytes()).parseClaimsJws(jwtToken).getBody();
+		} catch (JwtException e) {
+			System.err.println(e);
+			//ExpiredJwtException
+			//throw new WebApplication
+			//throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token expirado");
+			//FilterErrorResponse errorResponse = new FilterErrorResponse(e);
+
+            
+            //response.getWriter().write(convertObjectToJson(errorResponse));
+            throw new HandleMyExeptionMessage("ERROR DE TOKEN: "+e.getMessage());
+		} catch (Exception e) {
+			System.err.println(e);
+		}
+		return claims;
+	}
 	
 	public void partOfToken(Claims claims) {
 		System.out.println("ID: " + claims.getId());
@@ -90,5 +109,6 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter{
 			session.setAttribute("usuario", claims.getSubject());
 		}
 	}
+	
 	
 }
