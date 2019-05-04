@@ -109,6 +109,10 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter{
 		if (session.getAttribute(Constantes.USUARIO) == null) {
 			session.setAttribute(Constantes.USUARIO, claims.getSubject());
 		}
+		
+		if(claims.get(Constantes.USUARIO_LOGEADO) != null && session.getAttribute(Constantes.USUARIO_LOGEADO) == null) {
+			session.setAttribute(Constantes.USUARIO_LOGEADO, claims.get(Constantes.USUARIO_LOGEADO));	
+		}
 	}
 	
 	

@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.impl.TextCodec;
+import sv.com.jcsvall.clientApi.configurations.Constantes;
 import sv.com.jcsvall.clientApi.entities.Usuario;
 import sv.com.jcsvall.clientApi.models.UserDto;
 import sv.com.jcsvall.clientApi.models.UsuarioDto;
@@ -41,6 +42,7 @@ public class UserController {
 	@PostMapping("user")
 	public UserDto login(@RequestParam("user") String username, @RequestParam("password") String pwd) {
 		String roles="ROLE_USER,ROLE_ADMIN";
+		Usuario usSession=usuarioService.findByUsuarioAndPassword(username, pwd);
 		String token = getJWToken(username,roles);
 		UserDto us = new UserDto();
 		us.setUser(username);
@@ -69,13 +71,15 @@ public class UserController {
 	}
 
 	private String getJWToken(String username,String roles) {
+		final long MINUTO = 1000*60;
 		String secretKey = "secrectKey";
 		List<GrantedAuthority> grantedAuthorities = AuthorityUtils.commaSeparatedStringToAuthorityList(roles);
 		String token = Jwts.builder().setId("softtekJWT").setSubject(username)
 				.claim("authorities",
 						grantedAuthorities.stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
+				.claim(Constantes.USUARIO_LOGEADO, username)
 				.setIssuedAt(new Date(System.currentTimeMillis()))
-				.setExpiration(new Date(System.currentTimeMillis() + 600000))
+				.setExpiration(new Date(System.currentTimeMillis() + (MINUTO*180)))
 				.signWith(SignatureAlgorithm.HS512, secretKey.getBytes()).compact();
 
 		return "Bearer " + token;
