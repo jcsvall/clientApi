@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
 import sv.com.jcsvall.clientApi.entities.Cliente;
@@ -46,7 +47,7 @@ public class ClienteServiceImpl implements ClienteService {
 		return clienteRepository.save(cliente);
 	}
 
-	@Override
+	@Override	
 	public int deleteCliente(Cliente cliente) {
 		int deleted = 0;
 		clienteRepository.delete(cliente);
@@ -68,6 +69,13 @@ public class ClienteServiceImpl implements ClienteService {
 			clienteResponseDtoList.add(cliente);
 		}
 		return clienteResponseDtoList;
-	}	
+	}
+
+	@Override
+	public void deleteById(Long id) {
+		clienteRepository.deleteById(id);
+	}
+
+	
 
 }

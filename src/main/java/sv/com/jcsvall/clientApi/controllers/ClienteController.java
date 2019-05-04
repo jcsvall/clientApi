@@ -4,7 +4,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpSession;
 
@@ -13,6 +12,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -81,14 +81,28 @@ public class ClienteController {
 		String userName = (String) session.getAttribute(Constantes.USUARIO);
 		Usuario usuarioD = usuarioService.findByUsuario(userName);
 		Date now = new Date();
-		
+
 		List<ClienteResponseDto> clientesVencidos = new ArrayList<>();
-		for(Cliente clien:usuarioD.getClientes()) {
-			if(clien.getFechaFin().before(now)) {
+		for (Cliente clien : usuarioD.getClientes()) {
+			if (clien.getFechaFin().before(now)) {
 				clientesVencidos.add(new ClienteResponseDto(clien));
 			}
 		}
 
 		return new ResponseEntity<List<ClienteResponseDto>>(clientesVencidos, HttpStatus.OK);
+	}
+
+	@PostMapping("/delete/{id}")
+	public ResponseEntity<String> deleteCliente(@PathVariable Long id) {
+		String userName = (String) session.getAttribute(Constantes.USUARIO);
+		Usuario usuarioD = usuarioService.findByUsuario(userName);
+		Cliente cliente = usuarioD.getClientes().stream().filter(c -> c.getId().equals(id)).findFirst().orElse(null);
+		if (cliente != null) {
+			clienteService.deleteById(cliente.getId());
+		} else {
+			return new ResponseEntity<String>("El cliente no fue encontrado, no se elimino", HttpStatus.NOT_FOUND);
+		}
+
+		return new ResponseEntity<String>("Borrado", HttpStatus.OK);
 	}
 }
