@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -104,5 +105,25 @@ public class ClienteController {
 		}
 
 		return new ResponseEntity<String>("Borrado", HttpStatus.OK);
+	}
+	
+	@PutMapping("/edit/{id}")
+	public ResponseEntity<ClienteDto> editCliente(@PathVariable Long id,@RequestBody ClienteDto clienteDto) {
+		Cliente cli = clienteService.findById(id);
+		cli.setNombres(clienteDto.getNombres());
+		cli.setApellidos(clienteDto.getApellidos());
+		cli.setDocumento(clienteDto.getDocumento());
+		try {
+			SimpleDateFormat parseador = new SimpleDateFormat("dd/MM/yyyy");
+			Date dateInicio = parseador.parse(clienteDto.getFechaInicio());
+			Date dateFin = parseador.parse(clienteDto.getFechaFin());
+			cli.setFechaInicio(dateInicio);
+			cli.setFechaFin(dateFin);
+		} catch (Exception e) {
+			throw new HandleMyExeptionMessage("Formato de fecha no es correcto, formato: dd/MM/yyyy");
+		}
+
+		clienteService.addCliente(cli);
+		return new ResponseEntity<ClienteDto>(clienteDto, HttpStatus.OK);
 	}
 }

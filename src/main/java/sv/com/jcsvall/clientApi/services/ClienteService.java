@@ -2,8 +2,6 @@ package sv.com.jcsvall.clientApi.services;
 
 import java.util.List;
 
-import org.springframework.data.jpa.repository.Query;
-
 import sv.com.jcsvall.clientApi.entities.Cliente;
 import sv.com.jcsvall.clientApi.entities.Usuario;
 import sv.com.jcsvall.clientApi.models.ClienteResponseDto;
@@ -23,5 +21,7 @@ public interface ClienteService {
 	public abstract List<ClienteResponseDto> getAllClientesByUsuarioDto(Usuario usuario);
 	
 	public abstract void deleteById(Long id);
+	
+	public abstract Cliente findById(Long id);
 	
 }

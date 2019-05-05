@@ -21,4 +21,6 @@ public interface ClienteRepository extends JpaRepository<Cliente, Serializable> 
     @Query("delete from Cliente c where c.id = ?1")
 	public void deleteById(Long id);
 	
+	public Cliente findById(Long id);
+	
 }
