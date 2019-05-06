@@ -86,14 +86,15 @@ public class UserController {
 	}
 	
 	@PostMapping("create")
-	public ResponseEntity<Usuario> crearUsuario(@RequestBody UsuarioDto usuario) {
+	public ResponseEntity<UsuarioDto> crearUsuario(@RequestBody UsuarioDto usuario) {
 		Usuario us = new Usuario();
 		us.setUsuario(usuario.getUsuario());
 		us.setPassword(usuario.getPassword());
 		us.setEmail(usuario.getEmail());
+		us.setEmpresaEstablecimiento(usuario.getEmpresaEstablecimiento());
 		usuarioService.crearUsuario(us);
-		us.setPassword("*******");
-		return new ResponseEntity<Usuario>(us, HttpStatus.CREATED);
+		usuario.setPassword("*******");
+		return new ResponseEntity<UsuarioDto>(usuario, HttpStatus.CREATED);
 	}
 	
 	@PutMapping("editar")

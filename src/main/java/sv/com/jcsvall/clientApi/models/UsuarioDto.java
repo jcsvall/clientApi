@@ -14,6 +14,8 @@ public class UsuarioDto {
 	private String password;
 
 	private String email;
+	
+	private String empresaEstablecimiento;
 
 	public UsuarioDto() {
 	}
